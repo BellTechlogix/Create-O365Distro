@@ -14,7 +14,7 @@ $smtp = "smtp.belltechlogix.com"
 Add-PSsnapin Microsoft.Exchange.Management.PowerShell.E2010
 Add-PSSnapin Microsoft.Exchange.Management.PowerShell.SnapIn
 
-$DLs = get-DistributionGroup|select DisplayName,SamAccountName,GroupType,Alias,@{n='SmtpAddresses';e={ $_.EmailAddresses.SmtpAddress -join "," }},@{n='X500';e={"x500:"+$_.LegacyExchangeDN}},WindowsEmailAddress,PrimarySmtpAddress,@{n='ManagedByGUIds';e={$_.ManagedBy.objectguid  -join ","}},ManagedByAddresses,Members,IsDirSynced
+$DLs = get-DistributionGroup|select DisplayName,SamAccountName,GroupType,Alias,@{n='SmtpAddresses';e={ $_.EmailAddresses.SmtpAddress -join "," }},@{n='X500';e={"x500:"+$_.LegacyExchangeDN}},WindowsEmailAddress,PrimarySmtpAddress,@{n='ManagedByGUIds';e={$_.ManagedBy.objectguid  -join ","}},ManagedByAddresses,Members,IsDirSynced,RequireSenderAuthenticationEnabled
 FOREACH($DL in $DLs)
 {
     $DL.Members = (Get-DistributionGroupMember $DL.DisplayName|select @{n='SmtpAddresses';e={ $_.PrimarySMTPAddress}}).SmtpAddresses  -join ","

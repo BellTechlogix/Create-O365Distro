@@ -1,4 +1,4 @@
-$ver = '0.05'
+$ver = '0.06'
 <#
 Created By: BTL - Kristopher Roy
 Created On: 29APR22
@@ -37,16 +37,16 @@ foreach($dl in $importedList){}
 
 foreach($dl in $importedList)
 {
-    $Managedby = $dl.ManagedByAddresses
-    $Members = $dl.Members
-	$addresses = $dl.SmtpAddresses+','+$dl.x500
+    $Managedby = $dl.ManagedByAddresses.Split(',')
+    $Members = $dl.Members.Split(',')
+	$addresses = ($dl.SmtpAddresses+','+$dl.x500).split(',')
     If ($dl.GroupType -eq 'Universal' -or $dl.GroupType -eq 'Global')
     {
-        New-DistributionGroup -Name $dl.DisplayName -DisplayName $dl.DisplayName -Alias $dl.Alias -ManagedBy $Managedby -Members $Members -MemberDepartRestriction Closed -MemberJoinRestriction ApprovalRequired -PrimarySmtpAddress $dl.PrimarySmtpAddress -RequireSenderAuthenticationEnabled $false
+        New-DistributionGroup -Name $dl.DisplayName -DisplayName $dl.DisplayName -Alias $dl.Alias -ManagedBy $Managedby -Members $Members -MemberDepartRestriction Closed -MemberJoinRestriction ApprovalRequired -PrimarySmtpAddress $dl.PrimarySmtpAddress -RequireSenderAuthenticationEnabled $dl.RequireSenderAuthenticationEnabled
     }
     If ($dl.GroupType -eq 'Universal, SecurityEnabled' -or $dl.GroupType -eq 'Global, SecurityEnabled')
     {
-        New-DistributionGroup -Name $dl.DisplayName -DisplayName $dl.DisplayName -Alias $dl.Alias -ManagedBy $Managedby -Members $Members -MemberDepartRestriction Closed -MemberJoinRestriction ApprovalRequired -PrimarySmtpAddress $dl.PrimarySmtpAddress -RequireSenderAuthenticationEnabled $false -Type "Security"
+        New-DistributionGroup -Name $dl.DisplayName -DisplayName $dl.DisplayName -Alias $dl.Alias -ManagedBy $Managedby -Members $Members -MemberDepartRestriction Closed -MemberJoinRestriction ApprovalRequired -PrimarySmtpAddress $dl.PrimarySmtpAddress -RequireSenderAuthenticationEnabled $dl.RequireSenderAuthenticationEnabled -Type "Security"
     }
     Set-DistributionGroup $dl.DisplayName -emailaddresses @{Add=$addresses}
 }
