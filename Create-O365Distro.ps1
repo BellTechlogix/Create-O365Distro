@@ -1,4 +1,4 @@
-$ver = '0.01'
+$ver = '0.05'
 <#
 Created By: BTL - Kristopher Roy
 Created On: 29APR22
@@ -32,23 +32,21 @@ try{Connect-ExchangeOnline}Catch{
 }
 
 #Variables
-$importedList = import-csv c:\projects\BTL\exported-dls.csv
+$importedList = import-csv C:\projects\BTL\DistroGroups.csv
+foreach($dl in $importedList){}
 
 foreach($dl in $importedList)
 {
+    $Managedby = $dl.ManagedByAddresses
+    $Members = $dl.Members
+	$addresses = $dl.SmtpAddresses+','+$dl.x500
     If ($dl.GroupType -eq 'Universal' -or $dl.GroupType -eq 'Global')
     {
-        $Name = $dl.DisplayName
-        $Managedby = $dl.ManagedByAddresses
-        $Members = $dl.
-        New-DistributionGroup -Name $Name -DisplayName $Name -ManagedBy $Managedby -Members Kristopher.roy@belltechlogix.com,hchen@belltechlogix.com -MemberDepartRestriction Closed -MemberJoinRestriction ApprovalRequired -PrimarySmtpAddress "Testing-scripted-create-dl@belltechlogix.com" -RequireSenderAuthenticationEnabled $false
+        New-DistributionGroup -Name $dl.DisplayName -DisplayName $dl.DisplayName -Alias $dl.Alias -ManagedBy $Managedby -Members $Members -MemberDepartRestriction Closed -MemberJoinRestriction ApprovalRequired -PrimarySmtpAddress $dl.PrimarySmtpAddress -RequireSenderAuthenticationEnabled $false
     }
     If ($dl.GroupType -eq 'Universal, SecurityEnabled' -or $dl.GroupType -eq 'Global, SecurityEnabled')
     {
-        $dl.DisplayName
+        New-DistributionGroup -Name $dl.DisplayName -DisplayName $dl.DisplayName -Alias $dl.Alias -ManagedBy $Managedby -Members $Members -MemberDepartRestriction Closed -MemberJoinRestriction ApprovalRequired -PrimarySmtpAddress $dl.PrimarySmtpAddress -RequireSenderAuthenticationEnabled $false -Type "Security"
     }
+    Set-DistributionGroup $dl.DisplayName -emailaddresses @{Add=$addresses}
 }
-
-$name1 = "Testing-scripted-create-sec"
-New-DistributionGroup -Name $name1 -DisplayName $name1 -ManagedBy Kristopher.roy@belltechlogix.com,hchen@belltechlogix.com -Members Kristopher.roy@belltechlogix.com,hchen@belltechlogix.com -MemberDepartRestriction Closed -MemberJoinRestriction ApprovalRequired -PrimarySmtpAddress "$name1@belltechlogix.com" -Type "Security" -RequireSenderAuthenticationEnabled $false
-Set-DistributionGroup $name1 -emailaddresses @{Add=’securitygrouptest@belltechlogix.com’,’x500:/O=Bellind/OU=GMA_CCI/cn=Recipients/cn=secgrouptest-SendAs’}
