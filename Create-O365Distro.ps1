@@ -7,7 +7,7 @@ Script Home: https://github.com/BellTechlogix/Create-O365Distro
 
 #Verify most recent version being used
 $curver = $ver
-$data = Invoke-RestMethod -Method Get -Uri https://raw.githubusercontent.com/BellTechlogix/GTIL-Onboarding-to-Groups/master/Onboarding-Groups.ps1
+$data = Invoke-RestMethod -Method Get -Uri https://raw.githubusercontent.com/BellTechlogix/Create-O365Distro/master/Create-O365Distro.ps1
 Invoke-Expression ($data.substring(0,13))
 if($curver -ge $ver){powershell -Command "& {[System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms'); [System.Windows.Forms.MessageBox]::Show('You are running the most current script version $ver')}"}
 ELSEIF($curver -lt $ver){powershell -Command "& {[System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms'); [System.Windows.Forms.MessageBox]::Show('You are running $curver the most current script version is $ver. Ending')}" 
